@@ -1,7 +1,7 @@
 # laws_comparison
-compares texts of laws and finds pairs
+Compares texts of laws and finds pairs of similar ones.
 
-makes this table from matched files:
+It makes this table for sample of matched pairs of documents:
 
 	id_reg	id_pub	is_same	similarity
 0	92278	1201908020023	True	52.0
@@ -23,3 +23,28 @@ makes this table from matched files:
 64	90243	1201908090016	True	86.0
 69	92697	1201908070004	True	94.0
 70	90475	1201908070003	True	92.0
+
+
+If id_pub in matched sample is randomly shuffled it makes the following table:
+
+	id_reg	id_pub	is_same	similarity
+1	92303	1201906200017	False	39.0
+3	89325	1201908090022	False	43.0
+4	92291	1201907310019	False	39.0
+6	91665	1201908010028	True	51.0
+8	92281	1201907190033	False	41.0
+9	92283	1201907310017	False	37.0
+10	92275	1201906210015	False	36.0
+14	89431	1201908090006	False	44.0
+22	91473	1201907310005	False	43.0
+23	89443	1201907150004	False	46.0
+28	91673	1201908090018	False	44.0
+29	91678	1201907160036	False	47.0
+38	90372	1201908090033	False	41.0
+39	89441	1201907250046	False	41.0
+47	90580	1201907250043	False	43.0
+52	90297	1201907120037	False	42.0
+63	91365	1201906270019	False	45.0
+64	90243	1201907120018	False	43.0
+69	92697	1201907100027	False	41.0
+70	90475	1201906280030	False	45.0
