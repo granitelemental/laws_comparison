@@ -3,6 +3,8 @@ Compares texts of laws and finds pairs of similar ones.
 
 It makes this table for sample of matched pairs of documents:
 
+results_df
+
 	id_reg	id_pub	is_same	similarity
 0	92278	1201908020023	True	52.0
 1	92303	1201907310018	True	55.0
@@ -26,6 +28,8 @@ It makes this table for sample of matched pairs of documents:
 
 
 If id_pub in matched sample is randomly shuffled it makes the following table:
+
+shuffled_results_df
 
 	id_reg	id_pub	is_same	similarity
 1	92303	1201906200017	False	39.0
