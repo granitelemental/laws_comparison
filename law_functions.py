@@ -7,6 +7,7 @@ import numpy as np
 import os, fnmatch
 import string
 
+
 def concatenate_names(data):
     """creates table with law names, ids and dates"""
     for i in data.iloc[:-1].index:
@@ -24,11 +25,9 @@ def concatenate_names(data):
     data_new.index = [i for i in range(0,data_new.shape[0])]
     
     return data_new
-
-
-
      
 
+    
 def file2str(id, folder):
     try:
         filename = fnmatch.filter(os.listdir(f'/home/alena/Desktop/Laws/laws_db/{folder}/files/'), f'*{id}*.txt')[0]
@@ -115,3 +114,31 @@ def get_is_texts_match_by_id(id_pub, id_reg, min_similarity=50):
     except:
         return None, None
         
+        
+        
+def get_sample_matches(matches,min_similarity):
+    
+    results = {
+        "id_reg":[],
+        "id_pub":[],
+        "is_same":[],
+        "similarity":[],
+    }
+    
+    for n in range(0,matches.shape[0]):
+        id_reg = matches["regulation"][n]
+        id_pub = matches["publication"][n]
+        
+        compar_result = get_is_texts_match_by_id(id_reg=id_reg, \
+                                                        id_pub=id_pub, \
+                                                        min_similarity=min_similarity)
+        
+        results["id_reg"].append(id_reg)
+        results["id_pub"].append(id_pub)
+        results["is_same"].append(compar_result[0])
+        results["similarity"].append(compar_result[1])
+        
+#         results = pd.DataFrame(results)
+        
+        #print(rates)
+    return(results)
