@@ -97,13 +97,27 @@ def compare_names_by_ids(id_reg, id_pub):
     return measure
 
 
-def compare_by_id(id_reg, id_pub):
+def compare_by_id(id_reg, id_pub, min_name_ratio=None):
     res = {"name_ratio": [], "text_ratio": [], "id_reg": [], "id_pub": []}
 
     res["name_ratio"] = compare_names_by_ids(id_reg, id_pub)
-    res["text_ratio"] = compare_text_by_ids(id_reg, id_pub)
     res["id_reg"] = id_reg
     res["id_pub"] = id_pub
+
+    name_ratio = res["name_ratio"]
+
+    if min_name_ratio is not None:
+
+        if res["name_ratio"] >= min_name_ratio:
+            print(f"name_ratio: {name_ratio} >= min_name_ratio: {min_name_ratio}")
+            res["text_ratio"] = compare_text_by_ids(id_reg, id_pub)
+        else:
+            print(f"name_ratio: {name_ratio} < min_name_ratio: {min_name_ratio}")
+            res["text_ratio"] = -1
+        return res     
+
+    else:
+        res["text_ratio"] = compare_text_by_ids(id_reg, id_pub)
 
     return res
 
@@ -133,8 +147,10 @@ def write_matches_comparisons(matches, path, starts, ends):
     return
 
 
-def write_check_treshold_on_matched_sample(matches, Q, path, suffled_matches_path=None, matches_path=None):
-"""If matches_path is given Q ~ 0.15, if suffled_matches_path is given Q ~ 0.95-0.99"""
+def write_check_treshold_on_matched_sample(matches, dThreshold, Q, path, suffled_matches_path=None, matches_path=None):
+    """If matches_path is given Q ~ 0.15, if suffled_matches_path is given Q ~ 0.95-0.99
+    dThreshold - part (~ 0.1) which will be substracted from Q quantile of name_ratio in order to obtain min_name_ratio.
+    dThreshold used only if matches_path is not None and suffled_matches_path=None"""
 
     if (suffled_matches_path is not None) & (matches_path is None): 
         shuffled_matched_ratio = pd.read_csv(suffled_matches_path, sep="\t")
@@ -145,12 +161,16 @@ def write_check_treshold_on_matched_sample(matches, Q, path, suffled_matches_pat
     elif (suffled_matches_path is None) & (matches_path is not None): 
         matched_ratio = pd.read_csv(matches_path, sep="\t")
         min_name_ratio = matched_ratio[["name_ratio", "text_ratio", ]].quantile(q=Q)[0]
+        min_name_ratio = min_name_ratio - min_name_ratio*dThreshold 
         min_text_ratio = matched_ratio[["name_ratio", "text_ratio", ]].quantile(q=Q)[1]
-        print("UNSHUFFLED matches were used ","Q:", Q, "min_name_ratio: ", min_name_ratio, "min_text_ratio: ", min_text_ratio)
+        print("UNSHUFFLED matches were used ","dThreshold: ",dThreshold ,"Q:", Q, "min_name_ratio: ", min_name_ratio, "min_text_ratio: ", min_text_ratio)
 
     else:
         print("No matched of shuffled matched file.")
 
+
+    matched_df = pd.read_csv(matches_path, sep="\t")
+    #print(matched_df)
 
     with open(path, "a") as file:
 
@@ -159,28 +179,36 @@ def write_check_treshold_on_matched_sample(matches, Q, path, suffled_matches_pat
                 results = "name_ratio\ttext_ratio\tid_reg\tid_pub\tis_same_document"
                 print(results, file=file)
 
-        starts, ends = 0, matches.shape[0]
-        for i in range(starts, ends):
+        #starts, ends = 0, matches.shape[0]
 
-            id_reg = matches["regulation"][i]
-            id_pub = matches["publication"][i]
+        for i in range(0, matched_df.shape[0]):
 
-            res = compare_by_id(id_reg, id_pub)
-            print(res)
+            
 
-            name_ratio, text_ratio = res["name_ratio"], res["text_ratio"]
+            id_reg = matched_df["id_reg"][i]
+            id_pub = matched_df["id_pub"][i]
 
-            is_same_document = (text_ratio >= min_text_ratio) & (name_ratio >= min_name_ratio)
+            # res = compare_by_id(id_reg, id_pub)
+            # print(res)
+
+            name_ratio, text_ratio = matched_df["name_ratio"][i], matched_df["text_ratio"][i]
+
+            is_same_document = (name_ratio >= min_name_ratio) #& (text_ratio >= min_text_ratio) 
 
             results = f"{name_ratio}\t{text_ratio}\t{id_reg}\t{id_pub}\t{is_same_document}"
+            print("\nComparison: ",results)
 
             if (not np.isnan(text_ratio)) & (text_ratio is not None):
                 print(results, file=file)
+
     return
 
 
-def compare_laws(Q, path, starts, ends, suffled_matches_path=None, matches_path=None):
-"""If matches_path is given Q ~ 0.15, if suffled_matches_path is given Q ~ 0.95-0.99"""
+def compare_laws(Q, dThreshold, path, starts, ends, suffled_matches_path=None, matches_path=None):
+    """If matches_path is given Q ~ 0.15, if suffled_matches_path is given Q ~ 0.95-0.99
+    dThreshold - part (~ 0.1) which will be substracted from Q quantile of name_ratio in order to obtain min_name_ratio.
+    dThreshold used only if matches_path is not None and suffled_matches_path=None"""
+
 
     if (suffled_matches_path is not None) & (matches_path is None): 
         shuffled_matched_ratio = pd.read_csv(suffled_matches_path, sep="\t")
@@ -191,14 +219,12 @@ def compare_laws(Q, path, starts, ends, suffled_matches_path=None, matches_path=
     elif (suffled_matches_path is None) & (matches_path is not None): 
         matched_ratio = pd.read_csv(matches_path, sep="\t")
         min_name_ratio = matched_ratio[["name_ratio", "text_ratio", ]].quantile(q=Q)[0]
+        min_name_ratio = min_name_ratio - min_name_ratio*dThreshold 
         min_text_ratio = matched_ratio[["name_ratio", "text_ratio", ]].quantile(q=Q)[1]
-        print("UNSHUFFLED matches were used ","Q:", Q, "min_name_ratio: ", min_name_ratio, "min_text_ratio: ", min_text_ratio)
+        print("UNSHUFFLED matches were used ","dThreshold: ",dThreshold ,"Q:", Q, "min_name_ratio: ", min_name_ratio, "min_text_ratio: ", min_text_ratio)
 
     else:
         print("No matched of shuffled matched file.")
-
-
-
 
 
     with open(path, "a") as file:
@@ -211,15 +237,16 @@ def compare_laws(Q, path, starts, ends, suffled_matches_path=None, matches_path=
             for id_pub in pub_names.index:
                 if pub_names["date"][id_pub] < reg_names["date"][id_reg]:
 
-                    res = compare_by_id(id_reg, id_pub)
+                    res = compare_by_id(id_reg, id_pub, min_name_ratio=min_name_ratio)
                     print(res)
 
                     name_ratio, text_ratio = res["name_ratio"], res["text_ratio"]
 
-                    results = f"{name_ratio}\t{text_ratio}\t{id_reg}\t{id_pub}"
+                    
 
                     if (not np.isnan(text_ratio)) & (text_ratio is not None):
                         if (name_ratio >= min_name_ratio):#(text_ratio >= min_text_ratio) & (name_ratio >= min_name_ratio):
+                            results = f"{name_ratio}\t{text_ratio}\t{id_reg}\t{id_pub}"
                             print(results, file=file)
 
 
