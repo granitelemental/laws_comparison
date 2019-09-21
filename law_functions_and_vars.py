@@ -234,7 +234,7 @@ def compare_laws(Q, dThreshold, path, starts, ends, suffled_matches_path=None, m
 
         for count, id_reg in enumerate(reg_names.index[starts:ends]):
 
-            print("IRERATION: ", count)
+            print("ITERATION: ", count)
 
             for id_pub in pub_names.index:
                 print("id_pub: ", id_pub, "id_reg: ", id_reg)
