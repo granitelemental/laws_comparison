@@ -170,6 +170,7 @@ def write_check_treshold_on_matched_sample(matches, dThreshold, Q, path, suffled
 
 
     matched_df = pd.read_csv(matches_path, sep="\t")
+    #print(matched_df)
 
     with open(path, "a") as file:
 
@@ -178,10 +179,17 @@ def write_check_treshold_on_matched_sample(matches, dThreshold, Q, path, suffled
                 results = "name_ratio\ttext_ratio\tid_reg\tid_pub\tis_same_document"
                 print(results, file=file)
 
+        #starts, ends = 0, matches.shape[0]
+
         for i in range(0, matched_df.shape[0]):
+
+            
 
             id_reg = matched_df["id_reg"][i]
             id_pub = matched_df["id_pub"][i]
+
+            # res = compare_by_id(id_reg, id_pub)
+            # print(res)
 
             name_ratio, text_ratio = matched_df["name_ratio"][i], matched_df["text_ratio"][i]
 
@@ -225,9 +233,15 @@ def compare_laws(Q, dThreshold, path, starts, ends, suffled_matches_path=None, m
                 results = "name_ratio\ttext_ratio\tid_reg\tid_pub"
                 print(results, file=file)
 
+        count = 0        
         for id_reg in reg_names.index[starts:ends]:
+
+            print("IRERATION: ",count)
+            count+=1
+
             for id_pub in pub_names.index:
-                if pub_names["date"][id_pub] < reg_names["date"][id_reg]:
+                print("id_pub: ", id_pub, "id_reg: ", id_reg )
+                if pub_names["date"][id_pub] > reg_names["date"][id_reg]:
 
                     res = compare_by_id(id_reg, id_pub, min_name_ratio=min_name_ratio)
                     print(res)
@@ -240,6 +254,10 @@ def compare_laws(Q, dThreshold, path, starts, ends, suffled_matches_path=None, m
                         if (name_ratio >= min_name_ratio):#(text_ratio >= min_text_ratio) & (name_ratio >= min_name_ratio):
                             results = f"{name_ratio}\t{text_ratio}\t{id_reg}\t{id_pub}"
                             print(results, file=file)
+
+                else:
+                    print("pub_names date <= reg_names date")
+
 
 
 def get_min_name_ratio(Q,P,filename):
