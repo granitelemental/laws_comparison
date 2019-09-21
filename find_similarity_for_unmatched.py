@@ -14,7 +14,7 @@ import law_functions_and_vars as lf
 
 starts = 0
 ends = 1000
-Q = 0.01 #0.95
+Q = 0.01
 dThreshold = 0.2
 
 path = f"./results_NEW_compare_by_id_{starts}_{ends}_{Q}_TEST_3.csv"
