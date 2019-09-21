@@ -14,13 +14,18 @@ shuffled_matches["publication"] = np.random.permutation(shuffled_matches["public
 
 starts = 0
 ends = lf.matches.shape[0]
-Q = 0.05#0.95
+Q = 0.01 #0.95
+dThreshold = 0.2
 
-match_path = f"./results_matched_compare_by_id_{starts}_{ends}_TEST.csv"
+match_path = f"./results_matched_compare_by_id_{starts}_{ends}_TEST_3.csv"
 lf.write_matches_comparisons(lf.matches, match_path, starts, ends)
+print("File written: ", match_path)
 
-shuffled_path = f"./results_SHUFFlEmatched_compare_by_id_{starts}_{ends}_TEST.csv"
+shuffled_path = f"./results_SHUFFlEmatched_compare_by_id_{starts}_{ends}_TEST_3.csv"
 lf.write_matches_comparisons(shuffled_matches, shuffled_path, starts, ends)
+print("File written: ", shuffled_path)
 
-check_path = f"./check_results_on_matched_sample_TEST.csv"
-lf.write_check_treshold_on_matched_sample(lf.matches, Q, check_path, matches_path=match_path)
+
+check_path = f"./check_results_on_matched_sample_TEST_3.csv"
+lf.write_check_treshold_on_matched_sample(lf.matches, dThreshold, Q, check_path, matches_path=match_path)
+print("File written: ", check_path)
