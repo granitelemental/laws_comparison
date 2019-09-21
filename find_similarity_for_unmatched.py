@@ -14,10 +14,14 @@ import law_functions_and_vars as lf
 
 starts = 0
 ends = 1000
-Q = 0.95
+Q = 0.01 #0.95
+dThreshold = 0.2
 
-path = f"./results_NEW_compare_by_id_{starts}_{ends}_{Q}_TEST.csv"
+path = f"./results_NEW_compare_by_id_{starts}_{ends}_{Q}_TEST_3.csv"
 
-suffled_matches_path = f"./results_SHUFFlEmatched_compare_by_id_0_{lf.matches.shape[0]}_TEST.csv"  # file writen by write_matches_comparisons for shuffled matches
+#suffled_matches_path = f"./results_SHUFFlEmatched_compare_by_id_0_{lf.matches.shape[0]}_TEST_3.csv"  # file writen by write_matches_comparisons for shuffled matches
+match_path = f"./results_matched_compare_by_id_0_{lf.matches.shape[0]}_TEST_3.csv"
 
-lf.compare_laws(Q, path, starts, ends, suffled_matches_path)
+
+
+lf.compare_laws(Q, dThreshold ,path, starts, ends, matches_path = match_path)
