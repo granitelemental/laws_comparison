@@ -233,11 +233,9 @@ def compare_laws(Q, dThreshold, path, starts, ends, suffled_matches_path=None, m
                 results = "name_ratio\ttext_ratio\tid_reg\tid_pub"
                 print(results, file=file)
 
-        count = 0        
-        for id_reg in reg_names.index[starts:ends]:
+        for count, id_reg in enumerate(reg_names.index[starts:ends]):
 
-            print("IRERATION: ",count)
-            count+=1
+            print("IRERATION: ", count)
 
             for id_pub in pub_names.index:
                 print("id_pub: ", id_pub, "id_reg: ", id_reg )
@@ -258,10 +256,6 @@ def compare_laws(Q, dThreshold, path, starts, ends, suffled_matches_path=None, m
                 else:
                     print("pub_names date <= reg_names date")
 
-
-
-def get_min_name_ratio(Q,P,filename):
-    return
 
 
 
