@@ -12,14 +12,14 @@
 from multiprocessing import Pool, cpu_count
 import law_functions_and_vars as lf
 
-starts = 0
-ends = 5072
+original_starts = 0
+original_ends = 5072
 
 # get the number of cpu cores for multiprocessing
 n_processes = cpu_count()
-step = int(ends / n_processes)
+step = int(original_ends / n_processes)
 
-all_steps = range(starts, ends + step, step)
+all_steps = range(original_starts, original_ends + step, step)
 starts = all_steps[:-1]
 ends = all_steps[1:]
 
